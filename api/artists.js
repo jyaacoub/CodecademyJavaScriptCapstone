@@ -28,12 +28,11 @@ artistsRouter.get('/', (req, res, next) => {
     // Retrives all the entries in the artist table where they are employed    
     db.all(`
         SELECT * FROM Artist
-        WHERE is_currently_employed = 1;`, (err,rows)=>{
+        WHERE is_currently_employed = 1;`, (err, rows)=>{
             if (err) {
                 // passed on along the middleware chain for the errorhandler
                 next(err);  
             } else{
-
                 // similar to .send() but instead of a string we are sending a json.
                 res.status(200).json({artists: rows}); 
             }
