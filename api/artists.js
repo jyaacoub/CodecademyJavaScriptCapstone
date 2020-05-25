@@ -68,7 +68,7 @@ artistsRouter.post('/', (req, res, next) => {
     const dateOfBirth = req.body.artist.dateOfBirth;
     const biography = req.body.artist.biography;
     const isCurrentlyEmployed = req.body.artist.isCurrentlyEmployed;
-
+    
     // SQL query to create the new artist
     db.run(`
             INSERT INTO Artist (name, date_of_birth, biography, is_currently_employed) 

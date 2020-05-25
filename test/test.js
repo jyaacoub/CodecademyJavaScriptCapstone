@@ -332,7 +332,7 @@ describe('DELETE /api/artists/:id', function() {
   });
 });
 
-describe.skip('Series Table', function() {
+describe('Series Table', function() {
   it('should exist', function(done) {
     prodDb.get("SELECT name FROM sqlite_master WHERE type='table' AND name='Series'", (error, table) => {
       if (error || !table) {
@@ -386,117 +386,7 @@ describe.skip('Series Table', function() {
   });
 });
 
-describe.skip('Issue Table', function() {
-  it('should exist', function(done) {
-    prodDb.get("SELECT name FROM sqlite_master WHERE type='table' AND name='Issue'", (error, table) => {
-      if (error || !table) {
-        done(new Error(error || 'Issue table not found'));
-      }
-      if (table) {
-        done();
-      }
-    });
-  });
-
-  it('should have id, name, issue_number, publication_date, artist_id, and series_id columns with appropriate data types', function(done) {
-    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, artist_id, series_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1, 1)", function(error) {
-      if (error) {
-        done(new Error(error));
-      } else {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          expect(this.lastID).to.exist;
-          done();
-        });
-      }
-    });
-  });
-
-  it('should have a required name column', function(done) {
-    prodDb.run("INSERT INTO Issue (issue_number, publication_date, artist_id, series_id) VALUES (1, 'January 1, 1980', 1, 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without name was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-
-  it('should have a required name column', function(done) {
-    prodDb.run("INSERT INTO Issue (issue_number, publication_date, artist_id, series_id) VALUES (1, 'January 1, 1980', 1, 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without name was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-
-  it('should have a required issue_number column', function(done) {
-    prodDb.run("INSERT INTO Issue (name, publication_date, artist_id, series_id) VALUES ('Issue Name', 'January 1, 1980', 1, 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without issue_number was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-
-  it('should have a required publication_date column', function(done) {
-    prodDb.run("INSERT INTO Issue (name, issue_number, artist_id, series_id) VALUES ('Issue Name', 1, 1, 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without publication_date was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-
-  it('should have a required artist_id column', function(done) {
-    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, series_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without artist_id was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-
-  it('should have a required series_id column', function(done) {
-    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, artist_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1)", function(error) {
-      if (error && error.toString().includes('NOT NULL constraint failed')) {
-        done();
-      } else if (!error) {
-        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
-          done(new Error('Issue without series_id was created.'));
-        });
-      } else {
-        done(new Error(error));
-      }
-    });
-  });
-});
-
-describe.skip('GET /api/series', function() {
+describe('GET /api/series', function() {
   before(function(done) {
     seed.seedSeriesDatabase(done);
   });
@@ -520,7 +410,7 @@ describe.skip('GET /api/series', function() {
   });
 });
 
-describe.skip('GET /api/series/:id', function() {
+describe('GET /api/series/:id', function() {
   before(function(done) {
     seed.seedSeriesDatabase(done);
   });
@@ -714,6 +604,116 @@ describe.skip('DELETE /api/series/:id', function() {
     return request(app)
         .del('/api/series/2')
         .expect(400);
+  });
+});
+
+describe.skip('Issue Table', function() {
+  it('should exist', function(done) {
+    prodDb.get("SELECT name FROM sqlite_master WHERE type='table' AND name='Issue'", (error, table) => {
+      if (error || !table) {
+        done(new Error(error || 'Issue table not found'));
+      }
+      if (table) {
+        done();
+      }
+    });
+  });
+
+  it('should have id, name, issue_number, publication_date, artist_id, and series_id columns with appropriate data types', function(done) {
+    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, artist_id, series_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1, 1)", function(error) {
+      if (error) {
+        done(new Error(error));
+      } else {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          expect(this.lastID).to.exist;
+          done();
+        });
+      }
+    });
+  });
+
+  it('should have a required name column', function(done) {
+    prodDb.run("INSERT INTO Issue (issue_number, publication_date, artist_id, series_id) VALUES (1, 'January 1, 1980', 1, 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without name was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
+  });
+
+  it('should have a required name column', function(done) {
+    prodDb.run("INSERT INTO Issue (issue_number, publication_date, artist_id, series_id) VALUES (1, 'January 1, 1980', 1, 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without name was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
+  });
+
+  it('should have a required issue_number column', function(done) {
+    prodDb.run("INSERT INTO Issue (name, publication_date, artist_id, series_id) VALUES ('Issue Name', 'January 1, 1980', 1, 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without issue_number was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
+  });
+
+  it('should have a required publication_date column', function(done) {
+    prodDb.run("INSERT INTO Issue (name, issue_number, artist_id, series_id) VALUES ('Issue Name', 1, 1, 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without publication_date was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
+  });
+
+  it('should have a required artist_id column', function(done) {
+    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, series_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without artist_id was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
+  });
+
+  it('should have a required series_id column', function(done) {
+    prodDb.run("INSERT INTO Issue (name, issue_number, publication_date, artist_id) VALUES ('Issue Name', 1, 'January 1, 1980', 1)", function(error) {
+      if (error && error.toString().includes('NOT NULL constraint failed')) {
+        done();
+      } else if (!error) {
+        prodDb.run(`DELETE FROM Issue WHERE Issue.id = ${this.lastID}`, () => {
+          done(new Error('Issue without series_id was created.'));
+        });
+      } else {
+        done(new Error(error));
+      }
+    });
   });
 });
 
