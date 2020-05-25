@@ -295,7 +295,7 @@ describe('PUT /api/artists/:id', function() {
   });
 });
 
-describe.skip('DELETE /api/artists/:id', function() {
+describe('DELETE /api/artists/:id', function() {
   beforeEach(function(done) {
     seed.seedArtistDatabase(done);
   });
