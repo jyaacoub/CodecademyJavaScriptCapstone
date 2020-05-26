@@ -12,7 +12,6 @@ const validateFields = (req, res, next) => {
         next();
     } else if (!(req.body.issue.name && req.body.issue.issueNumber && 
             req.body.issue.publicationDate && req.body.issue.artistId)){
-        console.log("\t\tBADDD!");
         res.sendStatus(400);
     } else {
         db.get(`
@@ -24,8 +23,6 @@ const validateFields = (req, res, next) => {
                 } else if (!row) {
                     res.sendStatus(400);
                 } else {
-                console.log('\n\tGOOD:')    
-                console.log(req.body);
                     next();
                 }
             }
@@ -34,7 +31,6 @@ const validateFields = (req, res, next) => {
 };
 
 issuesRouter.param('issueId', (req, res, next, id) => {
-    console.log('\t\t PARAMS!');
     db.get(`
         SELECT * FROM Issue
         WHERE Issue.id = ${id};`,
@@ -113,11 +109,24 @@ issuesRouter.put('/:issueId', validateFields, (req, res, next) => {
         } else{
             db.get(`SELECT * FROM Issue WHERE Issue.id = ${req.params.issueId};`,
                 function(err, row){
-                    console.log('\t\t\t SUCCCC!!!!');
                     res.status(200).json({issue: row});
                 }
             );
         }
     });
 
+});
+
+issuesRouter.delete('/:issueId', (req, res, next) => {
+    db.run(`
+        DELETE FROM Issue
+        WHERE Issue.id = ${req.params.issueId};`, 
+        function(err) {
+            if(err){
+                next(err);
+            } else {
+                res.sendStatus(204);
+            }
+        }
+    );
 });

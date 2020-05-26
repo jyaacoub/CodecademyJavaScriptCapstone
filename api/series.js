@@ -90,6 +90,25 @@ seriesRouter.put('/:seriesId', validateFields, (req, res, next) => {
 const issuesRouter = require('./issues.js');
 seriesRouter.use('/:seriesId/issues', issuesRouter);
 
-// seriesRouter.delete('/:seriesId', (req, res, next) =>{
-
-// });
+seriesRouter.delete('/:seriesId', (req, res, next) =>{
+    // Check to insure there are no related issues in the database
+    db.get(`
+        SELECT * FROM Issue
+        WHERE Issue.series_id = ${req.params.seriesId};`, 
+        (err, row) =>{
+            if (err){
+                next(err);
+            } else if (row) {
+                res.sendStatus(400);
+            } else {
+                db.run(`
+                    DELETE FROM Series 
+                    WHERE Series.id = ${req.params.seriesId};`, 
+                    function(err) {
+                        res.sendStatus(204);
+                    }  
+                );
+            }
+        }
+    );
+});
