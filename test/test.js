@@ -717,7 +717,7 @@ describe('Issue Table', function() {
   });
 });
 
-describe.skip('GET /api/series/:seriesId/issues', function() {
+describe('GET /api/series/:seriesId/issues', function() {
   before(function(done) {
     seed.seedIssueDatabase(done);
   });
@@ -755,7 +755,7 @@ describe.skip('GET /api/series/:seriesId/issues', function() {
       });
 });
 
-describe.skip('POST /api/series/:seriesId/issues', function() {
+describe('POST /api/series/:seriesId/issues', function() {
   let newIssue;
 
   beforeEach(function(done) {
@@ -841,7 +841,7 @@ describe.skip('POST /api/series/:seriesId/issues', function() {
   });
 });
 
-describe.skip('PUT /api/series/:seriesId/issues/:issueId', function() {
+describe('PUT /api/series/:seriesId/issues/:issueId', function() {
   let updatedIssue;
 
   beforeEach(function(done) {

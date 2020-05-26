@@ -7,6 +7,21 @@ const artistsRouter = express.Router();
 
 module.exports = artistsRouter;
 
+// Checks and formats the request
+const validateFields = (req, res, next) => {
+    const name = req.body.artist.name;
+    const dateOfBirth = req.body.artist.dateOfBirth;
+    const biography = req.body.artist.biography;
+    // Checking to see if it has been set if not it defaults to 1
+    req.body.artist.isCurrentlyEmployed = req.body.artist.isCurrentlyEmployed === 0? 0 : 1;
+    
+    if (!(name && dateOfBirth && biography)) {
+        res.sendStatus(400);
+    } else {
+        next();
+    }
+};
+
 artistsRouter.param('artistId', (req, res, next, id) => {
     db.get(`
         SELECT * FROM Artist
@@ -44,26 +59,7 @@ artistsRouter.get('/:artistId', (req, res, next) => {
     res.status(200).json({artist: req.artist});
 });
 
-// Checks and formats the request
-artistsRouter.all('/*', (req, res, next) => {
-    if (!(req.body.artist)){ // not needed for delete requests
-        next();
-    }else{
-        const name = req.body.artist.name;
-        const dateOfBirth = req.body.artist.dateOfBirth;
-        const biography = req.body.artist.biography;
-        // Checking to see if it has been set if not it defaults to 1
-        req.body.artist.isCurrentlyEmployed = req.body.artist.isCurrentlyEmployed === 0? 0 : 1;
-        
-        if (!(name && dateOfBirth && biography)) {
-            res.sendStatus(400);
-        } else {
-            next();
-        }
-    }
-});
-
-artistsRouter.post('/', (req, res, next) => {
+artistsRouter.post('/', validateFields, (req, res, next) => {
     const name = req.body.artist.name;
     const dateOfBirth = req.body.artist.dateOfBirth;
     const biography = req.body.artist.biography;
@@ -87,7 +83,7 @@ artistsRouter.post('/', (req, res, next) => {
     );
 });
 
-artistsRouter.put('/:artistId', (req, res, next) => {
+artistsRouter.put('/:artistId', validateFields, (req, res, next) => {
     const name = req.body.artist.name;
     const dateOfBirth = req.body.artist.dateOfBirth;
     const biography = req.body.artist.biography;

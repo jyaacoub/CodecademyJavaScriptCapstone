@@ -6,6 +6,15 @@ const db = new sqlite3.Database(process.env.TEST_DATABASE ||  './database.sqlite
 
 module.exports = seriesRouter;
 
+// checks to see if any fields are missing 
+const validateFields = (req, res, next) => {
+    if (!(req.body.series.name && req.body.series.description)){
+        res.sendStatus(400);
+    } else {
+        next();
+    }
+};
+
 seriesRouter.param('seriesId', (req, res, next, id) => {
     db.get(`
         SELECT * FROM Series
@@ -37,16 +46,7 @@ seriesRouter.get('/:seriesId', (req, res, next)=>{
     res.status(200).json({series: req.series});
 });
 
-// checks to see if any fields are missing 
-seriesRouter.all('/*', (req, res, next) => {
-    if (!(req.body.series && req.body.series.name && req.body.series.description)){
-        res.sendStatus(400);
-    } else {
-        next();
-    }
-});
-
-seriesRouter.post('/', (req, res, next) => {
+seriesRouter.post('/', validateFields, (req, res, next) => {
     db.run(`
         INSERT INTO Series (name, description) 
         VALUES ('${req.body.series.name}', '${req.body.series.description}');`, 
@@ -66,7 +66,7 @@ seriesRouter.post('/', (req, res, next) => {
     );
 });
 
-seriesRouter.put('/:seriesId', (req, res, next) => {
+seriesRouter.put('/:seriesId', validateFields, (req, res, next) => {
     db.run(`
         UPDATE Series 
         SET name = '${req.body.series.name}', 
@@ -86,6 +86,9 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
         }
     );
 });
+
+const issuesRouter = require('./issues.js');
+seriesRouter.use('/:seriesId/issues', issuesRouter);
 
 // seriesRouter.delete('/:seriesId', (req, res, next) =>{
 
