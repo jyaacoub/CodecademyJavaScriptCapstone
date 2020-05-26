@@ -36,3 +36,57 @@ seriesRouter.get('/', (req, res, next) => {
 seriesRouter.get('/:seriesId', (req, res, next)=>{
     res.status(200).json({series: req.series});
 });
+
+// checks to see if any fields are missing 
+seriesRouter.all('/*', (req, res, next) => {
+    if (!(req.body.series && req.body.series.name && req.body.series.description)){
+        res.sendStatus(400);
+    } else {
+        next();
+    }
+});
+
+seriesRouter.post('/', (req, res, next) => {
+    db.run(`
+        INSERT INTO Series (name, description) 
+        VALUES ('${req.body.series.name}', '${req.body.series.description}');`, 
+        function(err) {
+            if (err){
+                next(err);
+            } else {
+                db.get(`
+                    SELECT * FROM Series 
+                    WHERE Series.id = ${this.lastID}`,
+                    function (err, row) {
+                        res.status(201).json({series : row});
+                    } 
+                );
+            }
+        }
+    );
+});
+
+seriesRouter.put('/:seriesId', (req, res, next) => {
+    db.run(`
+        UPDATE Series 
+        SET name = '${req.body.series.name}', 
+            description = '${req.body.series.description}'
+        WHERE Series.id = ${req.params.seriesId};`, 
+        function(err){
+            if (err) {
+                next(err);
+            } else {
+                db.get(`SELECT * FROM Series WHERE Series.id = ${req.params.seriesId};`, 
+                    function(err, row){
+                        res.status(200).json({series: row});
+                    }
+                )
+            }
+
+        }
+    );
+});
+
+// seriesRouter.delete('/:seriesId', (req, res, next) =>{
+
+// });
